@@ -1,0 +1,27 @@
+{
+    "name": "chubbyphp/chubbyphp-error-handler",
+    "description": "Chubbyphp Error Handler",
+    "keywords": ["chubbyphp", "slim", "error-handler"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dominik Zogg",
+            "email": "dominik.zogg@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~7.0",
+        "psr/http-message": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.5"
+    },
+    "autoload": {
+        "psr-4": { "Chubbyphp\\ErrorHandler\\": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
