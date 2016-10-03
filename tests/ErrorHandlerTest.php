@@ -5,6 +5,7 @@ namespace Chubbyphp\Tests\ErrorHandler;
 use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
 use Chubbyphp\ErrorHandler\ErrorHandler;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,6 +16,7 @@ final class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     public function testInvokeWithASupportedResponseProvider()
     {
+        $request = $this->getRequest();
         $response = $this->getResponse();
 
         $errorHandler = new ErrorHandler(
@@ -27,7 +29,9 @@ final class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
+        self::assertSame(
+            $response, $errorHandler($request, $response, HttpException::create($request, $response, 404, 'Not found'))
+        );
     }
 
     public function testInvokeWithoutASupportedResponseProvider()
