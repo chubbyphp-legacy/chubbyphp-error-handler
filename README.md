@@ -20,6 +20,34 @@ Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler
 
 ## Usage
 
+### ContentTypeResolver
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\ContentTypeResolver;
+use Negotiation\Negotiator;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
+$resolver = new ContentTypeResolver(new Negotiator, ['text/html']);
+$resolver->getContentType($request); // "Accept: application/xml, text/html" => (text/html)
+```
+
+### ErrorHandler
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\ErrorHandler;
+
+$resolver = ...
+$providers = [...];
+
+$errorHandler = new ErrorHandler($resolver, $providers);
+
+$response = $errorHander($request, $response, $expection);
+```
+
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-error-handler
 
 ## Copyright
