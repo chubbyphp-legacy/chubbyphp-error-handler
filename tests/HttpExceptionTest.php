@@ -11,7 +11,21 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreate()
+    public function testCreateWithoutMessage()
+    {
+        $request = $this->getRequest();
+        $response = $this->getResponse();
+        $status = 404;
+
+        $exception = HttpException::create($request, $response, $status);
+
+        self::assertSame($request, $exception->getRequest());
+        self::assertSame($response, $exception->getResponse());
+        self::assertSame($status, $exception->getCode());
+        self::assertSame('', $exception->getMessage());
+    }
+
+    public function testCreateWithMessage()
     {
         $request = $this->getRequest();
         $response = $this->getResponse();

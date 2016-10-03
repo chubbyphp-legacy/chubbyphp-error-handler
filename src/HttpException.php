@@ -25,7 +25,7 @@ final class HttpException extends \RuntimeException
      *
      * @return HttpException
      */
-    public static function create(Request $request, Response $response, int $status, string $message): self
+    public static function create(Request $request, Response $response, int $status, string $message = ''): self
     {
         $exception = new self($message, $status);
         $exception->request = $request;
