@@ -55,9 +55,6 @@ final class ErrorHandler
      */
     public function __invoke(Request $request, Response $response, \Exception $exception): Response
     {
-        $request = $exception instanceof HttpException ? $exception->getRequest(): $request;
-        $response = $exception instanceof HttpException ? $exception->getResponse(): $response;
-
         $contentType = $this->contentTypeResolver->getContentType($request);
 
         if (isset($this->providers[$contentType])) {
