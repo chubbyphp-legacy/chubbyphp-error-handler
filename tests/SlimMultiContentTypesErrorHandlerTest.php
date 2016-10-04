@@ -3,27 +3,29 @@
 namespace Chubbyphp\Tests\ErrorHandler;
 
 use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
-use Chubbyphp\ErrorHandler\ErrorHandler;
+use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\ErrorHandler
+ * @covers Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler
  */
-final class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
+final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     public function testInvokeWithASupportedResponseProvider()
     {
         $response = $this->getResponse();
 
-        $errorHandler = new ErrorHandler(
+        $fallbackProvider = $this->getErrorResponseProvider('text/html');
+
+        $errorHandler = new SlimMultiContentTypesErrorHandler(
             $this->getContentTypeResolver('application/xml'),
-            'text/html',
+            $fallbackProvider,
             [
+                $fallbackProvider,
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
-                $this->getErrorResponseProvider('text/html'),
             ]
         );
 
@@ -34,31 +36,19 @@ final class ErrorHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->getResponse();
 
-        $errorHandler = new ErrorHandler(
+        $fallbackProvider = $this->getErrorResponseProvider('text/html');
+
+        $errorHandler = new SlimMultiContentTypesErrorHandler(
             $this->getContentTypeResolver('application/unknown'),
-            'text/html',
+            $fallbackProvider,
             [
+                $fallbackProvider,
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
-                $this->getErrorResponseProvider('text/html'),
             ]
         );
 
         self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
-    }
-
-    public function testInvokeWithoutADefaultResponseProvider()
-    {
-        self::expectException(\LogicException::class);
-        self::expectExceptionMessage('Default provider is missing!');
-
-        $errorHandler = new ErrorHandler(
-            $this->getContentTypeResolver('application/xml'),
-            'text/html',
-            []
-        );
-
-        $errorHandler($this->getRequest(), $this->getResponse(), new \Exception());
     }
 
     /**

@@ -5,7 +5,7 @@ namespace Chubbyphp\ErrorHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-final class ErrorHandler
+final class SlimMultiContentTypesErrorHandler implements SlimErrorHandlerInterface
 {
     /**
      * @var ContentTypeResolverInterface
@@ -13,9 +13,9 @@ final class ErrorHandler
     private $contentTypeResolver;
 
     /**
-     * @var string
+     * @var ErrorResponseProviderInterface
      */
-    private $defaultProvider;
+    private $fallbackProvider;
 
     /**
      * @var ErrorResponseProviderInterface[]
@@ -23,14 +23,17 @@ final class ErrorHandler
     private $providers = [];
 
     /**
-     * @param ContentTypeResolverInterface     $contentTypeResolver
-     * @param string                           $defaultProvider
-     * @param ErrorResponseProviderInterface[] $providers
+     * @param ContentTypeResolverInterface   $contentTypeResolver
+     * @param ErrorResponseProviderInterface $fallbackProvider
+     * @param array                          $providers
      */
-    public function __construct(ContentTypeResolverInterface $contentTypeResolver, $defaultProvider, array $providers)
-    {
+    public function __construct(
+        ContentTypeResolverInterface $contentTypeResolver,
+        ErrorResponseProviderInterface $fallbackProvider,
+        array $providers = []
+    ) {
         $this->contentTypeResolver = $contentTypeResolver;
-        $this->defaultProvider = $defaultProvider;
+        $this->fallbackProvider = $fallbackProvider;
         foreach ($providers as $provider) {
             $this->addProvider($provider);
         }
@@ -61,10 +64,6 @@ final class ErrorHandler
             return $this->providers[$contentType]->get($request, $response, $exception);
         }
 
-        if (isset($this->providers[$this->defaultProvider])) {
-            return $this->providers[$this->defaultProvider]->get($request, $response, $exception);
-        }
-
-        throw new \LogicException('Default provider is missing!');
+        return $this->fallbackProvider->get($request, $response, $exception);
     }
 }

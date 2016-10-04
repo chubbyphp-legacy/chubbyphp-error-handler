@@ -14,13 +14,17 @@ A simple Error Handler Interface for PSR7.
  * php: ~7.0
  * psr/http-message: ~1.0
 
+## Suggest
+
+ * willdurand/negotiation: ~2.1
+
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler][1].
 
 ## Usage
 
-### ContentTypeResolver
+### ContentTypeResolver (needed only for multi content type error handler)
 
 ```{.php}
 <?php
@@ -33,17 +37,26 @@ $resolver = new ContentTypeResolver(new Negotiator, ['text/html']);
 $resolver->getContentType($request); // "Accept: application/xml, text/html" => (text/html)
 ```
 
-### ErrorHandler
+### SlimSingleContentTypeErrorHandler
 
 ```{.php}
 <?php
 
-use Chubbyphp\ErrorHandler\ErrorHandler;
+use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
 
-$resolver = ...
-$providers = [...];
+$errorHandler = new SlimSingleContentTypeErrorHandler($provider);
 
-$errorHandler = new ErrorHandler($resolver, $providers);
+$response = $errorHander($request, $response, $exception);
+```
+
+### SlimMultiContentTypesErrorHandler
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
+
+$errorHandler = new SlimMultiContentTypesErrorHandler($resolver, $fallbackProvider, $providers);
 
 $response = $errorHander($request, $response, $expection);
 ```
