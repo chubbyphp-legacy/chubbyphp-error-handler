@@ -24,7 +24,60 @@ Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler
 
 ## Usage
 
-### ContentTypeResolver (needed only for multi content type error handler)
+### SlimSingleContentType / SlimMultiContentTypesErrorHandler
+
+#### HtmlErrorProvider (implements ErrorHandlerProvider)
+
+```{.php}
+<?php
+
+namespace MyProject\ErrorHandler;
+
+use Chubbyphp\ErrorHandler\ErrorHandlerProvider;
+
+class HtmlErrorHandlerProvider implements ErrorHandlerProvider
+{
+    /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return 'text/html';
+    }
+
+    /**
+     * @param Request    $request
+     * @param Response   $response
+     * @param \Exception $exception
+     *
+     * @return Response
+     */
+    public function get(Request $request, Response $response, \Exception $exception): Response
+    {
+        // do some stuff, fancy rendering
+
+        return $response;
+    }
+}
+```
+
+### SlimSingleContentType
+
+#### SlimSingleContentTypeErrorHandler
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
+
+$errorHandler = new SlimSingleContentTypeErrorHandler($provider);
+
+$response = $errorHander($request, $response, $exception);
+```
+
+### SlimMultiContentTypes
+
+#### ContentTypeResolver (needed only for multi content type error handler)
 
 ```{.php}
 <?php
@@ -37,19 +90,7 @@ $resolver = new ContentTypeResolver(new Negotiator, ['text/html']);
 $resolver->getContentType($request); // "Accept: application/xml, text/html" => (text/html)
 ```
 
-### SlimSingleContentTypeErrorHandler
-
-```{.php}
-<?php
-
-use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
-
-$errorHandler = new SlimSingleContentTypeErrorHandler($provider);
-
-$response = $errorHander($request, $response, $exception);
-```
-
-### SlimMultiContentTypesErrorHandler
+#### SlimMultiContentTypesErrorHandler
 
 ```{.php}
 <?php
