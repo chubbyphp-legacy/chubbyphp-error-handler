@@ -18,12 +18,12 @@ final class ContentTypeResolverTest extends \PHPUnit_Framework_TestCase
             ['Accept' => ['text/html', 'application/xhtml+xml', 'application/xml;q=0.9', '*/*;q=0.8']]
         );
 
-        $resolver = new ContentTypeResolver(
-            $this->getNegotiator($this->getBest('application/xml')),
-            ['application/json', 'application/xml', 'text/html']
-        );
+        $resolver = new ContentTypeResolver($this->getNegotiator($this->getBest('application/xml')));
 
-        self::assertSame('application/xml', $resolver->getContentType($request));
+        self::assertSame(
+            'application/xml',
+            $resolver->getContentType($request, ['application/json', 'application/xml', 'text/html'])
+        );
     }
 
     public function testWithoutMatch()
@@ -32,12 +32,9 @@ final class ContentTypeResolverTest extends \PHPUnit_Framework_TestCase
             ['Accept' => ['text/html', 'application/xhtml+xml', 'application/xml;q=0.9', '*/*;q=0.8']]
         );
 
-        $resolver = new ContentTypeResolver(
-            $this->getNegotiator(),
-            ['application/json', 'application/xml', 'text/html']
-        );
+        $resolver = new ContentTypeResolver($this->getNegotiator());
 
-        self::assertNull($resolver->getContentType($request));
+        self::assertNull($resolver->getContentType($request, ['application/json', 'application/xml', 'text/html']));
     }
 
     /**

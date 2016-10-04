@@ -14,29 +14,24 @@ final class ContentTypeResolver implements ContentTypeResolverInterface
     private $negotiator;
 
     /**
-     * @var array
-     */
-    private $supportedContentTypes;
-
-    /**
      * @param Negotiator $negotiator
      * @param array      $supportedContentTypes
      */
-    public function __construct(Negotiator $negotiator, array $supportedContentTypes)
+    public function __construct(Negotiator $negotiator)
     {
         $this->negotiator = $negotiator;
-        $this->supportedContentTypes = $supportedContentTypes;
     }
 
     /**
      * @param Request $request
+     * @param array   $supportedContentTypes
      *
      * @return string|null
      */
-    public function getContentType(Request $request)
+    public function getContentType(Request $request, array $supportedContentTypes)
     {
         /** @var Accept $contentType */
-        $contentType = $this->negotiator->getBest($request->getHeaderLine('Accept'), $this->supportedContentTypes);
+        $contentType = $this->negotiator->getBest($request->getHeaderLine('Accept'), $supportedContentTypes);
         if (null !== $contentType) {
             return $contentType->getValue();
         }

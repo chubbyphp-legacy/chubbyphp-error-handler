@@ -86,8 +86,8 @@ use Chubbyphp\ErrorHandler\ContentTypeResolver;
 use Negotiation\Negotiator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-$resolver = new ContentTypeResolver(new Negotiator, ['text/html']);
-$resolver->getContentType($request); // "Accept: application/xml, text/html" => (text/html)
+$resolver = new ContentTypeResolver(new Negotiator);
+$resolver->getContentType($request, ['text/html']); // "Accept: application/xml, text/html" => (text/html)
 ```
 
 #### SlimMultiContentTypesErrorHandler

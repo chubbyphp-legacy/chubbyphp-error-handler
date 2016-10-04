@@ -34,6 +34,7 @@ final class SlimMultiContentTypesErrorHandler implements SlimErrorHandlerInterfa
     ) {
         $this->contentTypeResolver = $contentTypeResolver;
         $this->fallbackProvider = $fallbackProvider;
+        $this->addProvider($fallbackProvider);
         foreach ($providers as $provider) {
             $this->addProvider($provider);
         }
@@ -58,7 +59,7 @@ final class SlimMultiContentTypesErrorHandler implements SlimErrorHandlerInterfa
      */
     public function __invoke(Request $request, Response $response, \Exception $exception): Response
     {
-        $contentType = $this->contentTypeResolver->getContentType($request);
+        $contentType = $this->contentTypeResolver->getContentType($request, array_keys($this->providers));
 
         if (isset($this->providers[$contentType])) {
             return $this->providers[$contentType]->get($request, $response, $exception);

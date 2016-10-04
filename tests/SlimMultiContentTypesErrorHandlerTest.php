@@ -16,14 +16,10 @@ final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_Tes
     public function testInvokeWithASupportedResponseProvider()
     {
         $response = $this->getResponse();
-
-        $fallbackProvider = $this->getErrorResponseProvider('text/html');
-
         $errorHandler = new SlimMultiContentTypesErrorHandler(
             $this->getContentTypeResolver('application/xml'),
-            $fallbackProvider,
+            $this->getErrorResponseProvider('text/html'),
             [
-                $fallbackProvider,
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
             ]
@@ -36,13 +32,10 @@ final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_Tes
     {
         $response = $this->getResponse();
 
-        $fallbackProvider = $this->getErrorResponseProvider('text/html');
-
         $errorHandler = new SlimMultiContentTypesErrorHandler(
             $this->getContentTypeResolver('application/unknown'),
-            $fallbackProvider,
+            $this->getErrorResponseProvider('text/html'),
             [
-                $fallbackProvider,
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
             ]
@@ -67,7 +60,7 @@ final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_Tes
         $resolver
             ->expects(self::any())
             ->method('getContentType')
-            ->willReturnCallback(function (Request $request) use ($contentType) {
+            ->willReturnCallback(function (Request $request, array $supportedContentTypes) use ($contentType) {
                 return $contentType;
             })
         ;
