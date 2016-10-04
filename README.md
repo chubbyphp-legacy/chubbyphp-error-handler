@@ -27,7 +27,7 @@ Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler
 
 ### SimpleErrorHandler / AdvancedErrorHandler
 
-#### HtmlErrorProvider (implements ErrorHandlerProvider)
+#### JsonErrorResponseProvider (implements ErrorHandlerProvider)
 
 ```{.php}
 <?php
