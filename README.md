@@ -72,7 +72,7 @@ use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
 
 $errorHandler = new SlimSingleContentTypeErrorHandler($provider);
 
-$response = $errorHander($request, $response, $exception);
+$response = $errorHandler($request, $response, $exception);
 ```
 
 ### SlimMultiContentTypes
@@ -99,7 +99,7 @@ use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
 
 $errorHandler = new SlimMultiContentTypesErrorHandler($resolver, $fallbackProvider, $providers);
 
-$response = $errorHander($request, $response, $expection);
+$response = $errorHandler($request, $response, $expection);
 ```
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-error-handler
