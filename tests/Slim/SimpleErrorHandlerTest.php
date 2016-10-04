@@ -1,22 +1,22 @@
 <?php
 
-namespace Chubbyphp\Tests\ErrorHandler;
+namespace Chubbyphp\Tests\ErrorHandler\Slim;
 
-use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler
+ * @covers Chubbyphp\ErrorHandler\Slim\SimpleErrorHandler
  */
-final class SlimSingleContentTypeErrorHandlerTest extends \PHPUnit_Framework_TestCase
+final class SimpleErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     public function testInvoke()
     {
         $response = $this->getResponse();
 
-        $errorHandler = new SlimSingleContentTypeErrorHandler($this->getErrorResponseProvider('text/html'));
+        $errorHandler = new SimpleErrorHandler($this->getErrorResponseProvider('text/html'));
 
         self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
     }

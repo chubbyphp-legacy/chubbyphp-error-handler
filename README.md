@@ -25,7 +25,7 @@ Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler
 
 ## Usage
 
-### SlimSingleContentType / SlimMultiContentTypesErrorHandler
+### SimpleErrorHandler / AdvancedErrorHandler
 
 #### HtmlErrorProvider (implements ErrorHandlerProvider)
 
@@ -36,66 +36,67 @@ namespace MyProject\ErrorHandler;
 
 use Chubbyphp\ErrorHandler\ErrorHandlerProvider;
 
-class HtmlErrorHandlerProvider implements ErrorHandlerProvider
+class JsonErrorResponseProvider implements ErrorHandlerProvider
 {
     /**
      * @return string
      */
     public function getContentType(): string
     {
-        return 'text/html';
+        return 'application/json';
     }
 
     /**
-     * @param Request    $request
-     * @param Response   $response
+     * @param Request $request
+     * @param Response $response
      * @param \Exception $exception
-     *
      * @return Response
      */
     public function get(Request $request, Response $response, \Exception $exception): Response
     {
-        // do some stuff, fancy rendering
+        $response->getBody()->write(json_encode([
+            'exception' => ['message' => $exception->getMessage(), 'code' => $exception->getCode()]])
+        );
 
         return $response;
     }
 }
 ```
 
-### SlimSingleContentType
+### SimpleErrorHandler
 
-#### SlimSingleContentTypeErrorHandler
+#### SimpleErrorHandler
 
 ```{.php}
 <?php
 
-use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandler;
+use Chubbyphp\ErrorHandler\SimpleErrorHandler;
 
-$errorHandler = new SlimSingleContentTypeErrorHandler($provider);
+$errorHandler = new SimpleErrorHandler($provider);
 
 $response = $errorHandler($request, $response, $exception);
 ```
 
-#### SlimSingleContentTypeErrorHandlerProvider (Pimple)
+#### SimpleErrorHandlerProvider (Pimple)
 
 ```{.php}
 <?php
 
-use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandlerProvider;
-use MyProject\ErrorHandler\HtmlErrorHandlerProvider;
+use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
+use MyProject\ErrorHandler\JsonErrorResponseProvider;
 use Pimple/Container;
 
 $container = new Container();
-$container->register(new SlimSingleContentTypeErrorHandlerProvider);
+$container->register(new SimpleErrorHandlerProvider);
 
 
 // IMPORTANT: without this definition, the error handler will not work!
 $container['errorHandler.defaultProvider'] = function () use ($container) {
-    return new HtmlErrorHandlerProvider;
+    return new JsonErrorResponseProvider;
 };
 ```
 
-### SlimMultiContentTypes
+### AdvancedErrorHandler
 
 #### ContentTypeResolver (needed only for multi content type error handler)
 
@@ -110,43 +111,42 @@ $resolver = new ContentTypeResolver(new Negotiator);
 $resolver->getContentType($request, ['text/html']); // "Accept: application/xml, text/html" => (text/html)
 ```
 
-#### SlimMultiContentTypesErrorHandler
+#### AdvancedErrorHandler
 
 ```{.php}
 <?php
 
-use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
+use Chubbyphp\ErrorHandler\AdvancedErrorHandler;
 
-$errorHandler = new SlimMultiContentTypesErrorHandler($resolver, $fallbackProvider, $providers);
+$errorHandler = new AdvancedErrorHandler($resolver, $fallbackProvider, $providers);
 
 $response = $errorHandler($request, $response, $expection);
 ```
 
-#### SlimMultiContentTypesErrorHandlerProvider (Pimple)
+#### AdvancedErrorHandlerProvider (Pimple)
 
 ```{.php}
 <?php
 
-use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandlerProvider;
-use MyProject\ErrorHandler\HtmlErrorHandlerProvider;
-use MyProject\ErrorHandler\JsonErrorHandlerProvider;
+use Chubbyphp\ErrorHandler\AdvancedErrorHandlerProvider;
+use MyProject\ErrorHandler\JsonErrorResponseProvider;
+use MyProject\ErrorHandler\XmlErrorResponseProvider;
 use Pimple/Container;
 
 $container = new Container();
-$container->register(new SlimMultiContentTypesErrorHandlerProvider);
+$container->register(new AdvancedErrorHandlerProvider);
 
 // IMPORTANT: without this definition, the error handler will not work!
 $container['errorHandler.defaultProvider'] = function () use ($container) {
-    return new HtmlErrorHandlerProvider;
+    return new JsonErrorResponseProvider;
 };
 
 // optional: add more than the default provider
 $container->extend('errorHandler.providers', function (array $providers) {
-    $providers[] = new JsonErrorHandlerProvider;
+    $providers[] = new XmlErrorResponseProvider;
 
     return $providers;
 });
-
 ```
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-error-handler

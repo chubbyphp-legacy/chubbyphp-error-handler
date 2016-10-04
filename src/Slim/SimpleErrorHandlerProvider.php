@@ -1,11 +1,11 @@
 <?php
 
-namespace Chubbyphp\ErrorHandler;
+namespace Chubbyphp\ErrorHandler\Slim;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-final class SlimSingleContentTypeErrorHandlerProvider implements ServiceProviderInterface
+final class SimpleErrorHandlerProvider implements ServiceProviderInterface
 {
     /**
      * @param Container $container
@@ -17,7 +17,7 @@ final class SlimSingleContentTypeErrorHandlerProvider implements ServiceProvider
         };
 
         $container['errorHandler'] = function () use ($container) {
-            return new SlimSingleContentTypeErrorHandler($container['errorHandler.defaultProvider']);
+            return new SimpleErrorHandler($container['errorHandler.defaultProvider']);
         };
     }
 }

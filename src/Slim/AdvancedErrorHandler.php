@@ -1,11 +1,13 @@
 <?php
 
-namespace Chubbyphp\ErrorHandler;
+namespace Chubbyphp\ErrorHandler\Slim;
 
+use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
+use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-final class SlimMultiContentTypesErrorHandler implements SlimErrorHandlerInterface
+final class AdvancedErrorHandler implements ErrorHandlerInterface
 {
     /**
      * @var ContentTypeResolverInterface

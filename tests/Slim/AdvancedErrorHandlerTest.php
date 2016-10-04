@@ -1,22 +1,22 @@
 <?php
 
-namespace Chubbyphp\Tests\ErrorHandler;
+namespace Chubbyphp\Tests\ErrorHandler\Slim;
 
 use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
-use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\Slim\AdvancedErrorHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler
+ * @covers Chubbyphp\ErrorHandler\Slim\AdvancedErrorHandler
  */
-final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_TestCase
+final class AdvancedErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
     public function testInvokeWithASupportedResponseProvider()
     {
         $response = $this->getResponse();
-        $errorHandler = new SlimMultiContentTypesErrorHandler(
+        $errorHandler = new AdvancedErrorHandler(
             $this->getContentTypeResolver('application/xml'),
             $this->getErrorResponseProvider('text/html'),
             [
@@ -32,7 +32,7 @@ final class SlimMultiContentTypesErrorHandlerTest extends \PHPUnit_Framework_Tes
     {
         $response = $this->getResponse();
 
-        $errorHandler = new SlimMultiContentTypesErrorHandler(
+        $errorHandler = new AdvancedErrorHandler(
             $this->getContentTypeResolver('application/unknown'),
             $this->getErrorResponseProvider('text/html'),
             [

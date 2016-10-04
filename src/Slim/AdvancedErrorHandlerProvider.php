@@ -1,12 +1,13 @@
 <?php
 
-namespace Chubbyphp\ErrorHandler;
+namespace Chubbyphp\ErrorHandler\Slim;
 
+use Chubbyphp\ErrorHandler\ContentTypeResolver;
 use Negotiation\Negotiator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-final class SlimMultiContentTypesErrorHandlerProvider implements ServiceProviderInterface
+final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
 {
     /**
      * @param Container $container
@@ -30,7 +31,7 @@ final class SlimMultiContentTypesErrorHandlerProvider implements ServiceProvider
         };
 
         $container['errorHandler'] = function () use ($container) {
-            return new SlimMultiContentTypesErrorHandler(
+            return new AdvancedErrorHandler(
                 $container['errorHandler.contentTypeResolver'],
                 $container['errorHandler.defaultProvider'],
                 $container['errorHandler.providers']
