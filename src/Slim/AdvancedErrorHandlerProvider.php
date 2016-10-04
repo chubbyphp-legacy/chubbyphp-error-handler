@@ -14,13 +14,7 @@ final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
      */
     public function register(Container $container)
     {
-        $container['errorHandler.acceptNegation'] = function () use ($container) {
-            return new Negotiator();
-        };
-
-        $container['errorHandler.contentTypeResolver'] = function () use ($container) {
-            return new ContentTypeResolver($container['errorHandler.acceptNegation']);
-        };
+        $this->registerRequirements($container);
 
         $container['errorHandler.defaultProvider'] = function () use ($container) {
             throw new \RuntimeException('Please configure your default provider for error handler!');
@@ -36,6 +30,20 @@ final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
                 $container['errorHandler.defaultProvider'],
                 $container['errorHandler.providers']
             );
+        };
+    }
+
+    /**
+     * @param Container $container
+     */
+    private function registerRequirements(Container $container)
+    {
+        $container['errorHandler.acceptNegation'] = function () use ($container) {
+            return new Negotiator();
+        };
+
+        $container['errorHandler.contentTypeResolver'] = function () use ($container) {
+            return new ContentTypeResolver($container['errorHandler.acceptNegation']);
         };
     }
 }
