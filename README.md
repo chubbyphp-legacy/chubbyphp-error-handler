@@ -89,7 +89,6 @@ use Pimple/Container;
 $container = new Container();
 $container->register(new SimpleErrorHandlerProvider);
 
-
 // IMPORTANT: without this definition, the error handler will not work!
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return new JsonErrorResponseProvider;
@@ -108,7 +107,7 @@ use Negotiation\Negotiator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 $resolver = new ContentTypeResolver(new Negotiator);
-$resolver->getContentType($request, ['text/html']); // "Accept: application/xml, text/html" => (text/html)
+$resolver->getContentType($request, ['text/html']);
 ```
 
 #### AdvancedErrorHandler
