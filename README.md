@@ -16,6 +16,7 @@ A simple Error Handler Interface for PSR7.
 
 ## Suggest
 
+ * pimple/pimple: ~3.0
  * willdurand/negotiation: ~2.1
 
 ## Installation
@@ -75,6 +76,25 @@ $errorHandler = new SlimSingleContentTypeErrorHandler($provider);
 $response = $errorHandler($request, $response, $exception);
 ```
 
+#### SlimSingleContentTypeErrorHandlerProvider (Pimple)
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\SlimSingleContentTypeErrorHandlerProvider;
+use MyProject\ErrorHandler\HtmlErrorHandlerProvider;
+use Pimple/Container;
+
+$container = new Container();
+$container->register(new SlimSingleContentTypeErrorHandlerProvider);
+
+
+// IMPORTANT: without this definition, the error handler will not work!
+$container['errorHandler.defaultProvider'] = function () use ($container) {
+    return new HtmlErrorHandlerProvider;
+};
+```
+
 ### SlimMultiContentTypes
 
 #### ContentTypeResolver (needed only for multi content type error handler)
@@ -100,6 +120,33 @@ use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandler;
 $errorHandler = new SlimMultiContentTypesErrorHandler($resolver, $fallbackProvider, $providers);
 
 $response = $errorHandler($request, $response, $expection);
+```
+
+#### SlimMultiContentTypesErrorHandlerProvider (Pimple)
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\SlimMultiContentTypesErrorHandlerProvider;
+use MyProject\ErrorHandler\HtmlErrorHandlerProvider;
+use MyProject\ErrorHandler\JsonErrorHandlerProvider;
+use Pimple/Container;
+
+$container = new Container();
+$container->register(new SlimMultiContentTypesErrorHandlerProvider);
+
+// IMPORTANT: without this definition, the error handler will not work!
+$container['errorHandler.defaultProvider'] = function () use ($container) {
+    return new HtmlErrorHandlerProvider;
+};
+
+// optional: add more than the default provider
+$container->extend('errorHandler.providers', function (array $providers) {
+    $providers[] = new JsonErrorHandlerProvider;
+
+    return $providers;
+});
+
 ```
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-error-handler
