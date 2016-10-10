@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Chubbyphp\ErrorHandler;
 
 use Negotiation\Accept;
@@ -15,7 +17,6 @@ final class ContentTypeResolver implements ContentTypeResolverInterface
 
     /**
      * @param Negotiator $negotiator
-     * @param array      $supportedContentTypes
      */
     public function __construct(Negotiator $negotiator)
     {
