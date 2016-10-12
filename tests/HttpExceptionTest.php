@@ -22,7 +22,21 @@ final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
         self::assertSame($request, $exception->getRequest());
         self::assertSame($response, $exception->getResponse());
         self::assertSame($status, $exception->getCode());
-        self::assertSame('', $exception->getMessage());
+        self::assertSame(HttpException::STATUS_404, $exception->getMessage());
+    }
+
+    public function testCreateWithoutMessageAndUnknownCode()
+    {
+        $request = $this->getRequest();
+        $response = $this->getResponse();
+        $status = 700;
+
+        $exception = HttpException::create($request, $response, $status);
+
+        self::assertSame($request, $exception->getRequest());
+        self::assertSame($response, $exception->getResponse());
+        self::assertSame($status, $exception->getCode());
+        self::assertSame('unknown', $exception->getMessage());
     }
 
     public function testCreateWithMessage()
