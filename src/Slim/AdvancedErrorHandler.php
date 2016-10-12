@@ -6,8 +6,11 @@ namespace Chubbyphp\ErrorHandler\Slim;
 
 use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 final class AdvancedErrorHandler implements ErrorHandlerInterface
 {
@@ -27,14 +30,21 @@ final class AdvancedErrorHandler implements ErrorHandlerInterface
     private $providers = [];
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param ContentTypeResolverInterface   $contentTypeResolver
      * @param ErrorResponseProviderInterface $fallbackProvider
      * @param array                          $providers
+     * @param LoggerInterface|null           $logger
      */
     public function __construct(
         ContentTypeResolverInterface $contentTypeResolver,
         ErrorResponseProviderInterface $fallbackProvider,
-        array $providers = []
+        array $providers = [],
+        LoggerInterface $logger = null
     ) {
         $this->contentTypeResolver = $contentTypeResolver;
         $this->fallbackProvider = $fallbackProvider;
@@ -42,6 +52,7 @@ final class AdvancedErrorHandler implements ErrorHandlerInterface
         foreach ($providers as $provider) {
             $this->addProvider($provider);
         }
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -65,10 +76,32 @@ final class AdvancedErrorHandler implements ErrorHandlerInterface
     {
         $contentType = $this->contentTypeResolver->getContentType($request, array_keys($this->providers));
 
+        $this->logException($exception);
+
         if (isset($this->providers[$contentType])) {
             return $this->providers[$contentType]->get($request, $response, $exception);
         }
 
         return $this->fallbackProvider->get($request, $response, $exception);
+    }
+
+    /**
+     * @param \Exception $exception
+     */
+    private function logException(\Exception $exception)
+    {
+        if ($exception instanceof HttpException) {
+            $this->logger->warning(
+                'error-handler: {code} {message}',
+                ['status' => $exception->getCode(), 'message' => $exception->getMessage()]
+            );
+
+            return;
+        }
+
+        $this->logger->error(
+            'error-handler: {code} {message}',
+            ['status' => 500, 'message' => $exception->getMessage()]
+        );
     }
 }

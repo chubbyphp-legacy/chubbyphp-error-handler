@@ -19,7 +19,7 @@ final class SimpleErrorHandlerProvider implements ServiceProviderInterface
         };
 
         $container['errorHandler'] = function () use ($container) {
-            return new SimpleErrorHandler($container['errorHandler.defaultProvider']);
+            return new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null);
         };
     }
 }

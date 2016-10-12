@@ -3,7 +3,9 @@
 namespace Chubbyphp\Tests\ErrorHandler\Slim;
 
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Chubbyphp\ErrorHandler\Slim\SimpleErrorHandler;
+use Chubbyphp\Tests\ErrorHandler\LoggerTestTrait;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -12,13 +14,42 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 final class SimpleErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testInvoke()
+    use LoggerTestTrait;
+
+    public function testInvokeWithHttpException()
+    {
+        $request = $this->getRequest();
+        $response = $this->getResponse();
+
+        $logger = $this->getLogger();
+
+        $errorHandler = new SimpleErrorHandler($this->getErrorResponseProvider('text/html'), $logger);
+
+        self::assertSame(
+            $response,
+            $errorHandler($request, $response, HttpException::create($request, $response, 404, 'not found'))
+        );
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('warning', $logger->__logs[0]['level']);
+        self::assertSame('error-handler: {code} {message}', $logger->__logs[0]['message']);
+        self::assertSame(['status' => 404, 'message' => 'not found'], $logger->__logs[0]['context']);
+    }
+
+    public function testInvokeWithException()
     {
         $response = $this->getResponse();
 
-        $errorHandler = new SimpleErrorHandler($this->getErrorResponseProvider('text/html'));
+        $logger = $this->getLogger();
 
-        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
+        $errorHandler = new SimpleErrorHandler($this->getErrorResponseProvider('text/html'), $logger);
+
+        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception('error')));
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('error', $logger->__logs[0]['level']);
+        self::assertSame('error-handler: {code} {message}', $logger->__logs[0]['message']);
+        self::assertSame(['status' => 500, 'message' => 'error'], $logger->__logs[0]['context']);
     }
 
     /**

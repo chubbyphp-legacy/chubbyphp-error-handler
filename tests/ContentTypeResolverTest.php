@@ -12,17 +12,34 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 final class ContentTypeResolverTest extends \PHPUnit_Framework_TestCase
 {
+    use LoggerTestTrait;
+
     public function testWithMatch()
     {
         $request = $this->getRequest(
             ['Accept' => ['text/html', 'application/xhtml+xml', 'application/xml;q=0.9', '*/*;q=0.8']]
         );
 
-        $resolver = new ContentTypeResolver($this->getNegotiator($this->getBest('application/xml')));
+        $logger = $this->getLogger();
+        $resolver = new ContentTypeResolver($this->getNegotiator($this->getBest('application/xml')), $logger);
 
         self::assertSame(
             'application/xml',
             $resolver->getContentType($request, ['application/json', 'application/xml', 'text/html'])
+        );
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('info', $logger->__logs[0]['level']);
+        self::assertSame(
+            'error-handler: resolved content type {contentType} for accept header line {acceptHeaderLine}',
+            $logger->__logs[0]['message']
+        );
+        self::assertSame(
+            [
+                'contentType' => 'application/xml',
+                'acceptHeaderLine' => 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8',
+            ],
+            $logger->__logs[0]['context']
         );
     }
 
@@ -32,9 +49,21 @@ final class ContentTypeResolverTest extends \PHPUnit_Framework_TestCase
             ['Accept' => ['text/html', 'application/xhtml+xml', 'application/xml;q=0.9', '*/*;q=0.8']]
         );
 
-        $resolver = new ContentTypeResolver($this->getNegotiator());
+        $logger = $this->getLogger();
+        $resolver = new ContentTypeResolver($this->getNegotiator(), $logger);
 
         self::assertNull($resolver->getContentType($request, ['application/json', 'application/xml', 'text/html']));
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('warning', $logger->__logs[0]['level']);
+        self::assertSame(
+            'error-handler: could not resolve content type for accept header line {acceptHeaderLine}',
+            $logger->__logs[0]['message']
+        );
+        self::assertSame(
+            ['acceptHeaderLine' => 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8'],
+            $logger->__logs[0]['context']
+        );
     }
 
     /**

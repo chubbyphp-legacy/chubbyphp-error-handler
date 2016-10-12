@@ -30,7 +30,8 @@ final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
             return new AdvancedErrorHandler(
                 $container['errorHandler.contentTypeResolver'],
                 $container['errorHandler.defaultProvider'],
-                $container['errorHandler.providers']
+                $container['errorHandler.providers'],
+                $container['logger'] ?? null
             );
         };
     }

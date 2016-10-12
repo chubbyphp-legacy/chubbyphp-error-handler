@@ -4,7 +4,9 @@ namespace Chubbyphp\Tests\ErrorHandler\Slim;
 
 use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
 use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
+use Chubbyphp\ErrorHandler\HttpException;
 use Chubbyphp\ErrorHandler\Slim\AdvancedErrorHandler;
+use Chubbyphp\Tests\ErrorHandler\LoggerTestTrait;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -13,24 +15,41 @@ use Psr\Http\Message\ResponseInterface as Response;
  */
 final class AdvancedErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {
+    use LoggerTestTrait;
+
     public function testInvokeWithASupportedResponseProvider()
     {
+        $request = $this->getRequest();
         $response = $this->getResponse();
+
+        $logger = $this->getLogger();
+
         $errorHandler = new AdvancedErrorHandler(
             $this->getContentTypeResolver('application/xml'),
             $this->getErrorResponseProvider('text/html'),
             [
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
-            ]
+            ],
+            $logger
         );
 
-        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
+        self::assertSame(
+            $response,
+            $errorHandler($request, $response, HttpException::create($request, $response, 404, 'not found'))
+        );
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('warning', $logger->__logs[0]['level']);
+        self::assertSame('error-handler: {code} {message}', $logger->__logs[0]['message']);
+        self::assertSame(['status' => 404, 'message' => 'not found'], $logger->__logs[0]['context']);
     }
 
     public function testInvokeWithoutASupportedResponseProvider()
     {
         $response = $this->getResponse();
+
+        $logger = $this->getLogger();
 
         $errorHandler = new AdvancedErrorHandler(
             $this->getContentTypeResolver('application/unknown'),
@@ -38,10 +57,16 @@ final class AdvancedErrorHandlerTest extends \PHPUnit_Framework_TestCase
             [
                 $this->getErrorResponseProvider('application/json'),
                 $this->getErrorResponseProvider('application/xml'),
-            ]
+            ],
+            $logger
         );
 
-        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception()));
+        self::assertSame($response, $errorHandler($this->getRequest(), $response, new \Exception('error')));
+
+        self::assertCount(1, $logger->__logs);
+        self::assertSame('error', $logger->__logs[0]['level']);
+        self::assertSame('error-handler: {code} {message}', $logger->__logs[0]['message']);
+        self::assertSame(['status' => 500, 'message' => 'error'], $logger->__logs[0]['context']);
     }
 
     /**
