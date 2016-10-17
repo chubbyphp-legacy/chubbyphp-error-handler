@@ -23,6 +23,7 @@ final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
         self::assertSame($response, $exception->getResponse());
         self::assertSame($status, $exception->getCode());
         self::assertSame(HttpException::STATUS_404, $exception->getMessage());
+        self::assertTrue($exception->hasDefaultMessage());
     }
 
     public function testCreateWithoutMessageAndUnknownCode()
@@ -37,6 +38,7 @@ final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
         self::assertSame($response, $exception->getResponse());
         self::assertSame($status, $exception->getCode());
         self::assertSame('unknown', $exception->getMessage());
+        self::assertTrue($exception->hasDefaultMessage());
     }
 
     public function testCreateWithMessage()
@@ -52,6 +54,7 @@ final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
         self::assertSame($response, $exception->getResponse());
         self::assertSame($status, $exception->getCode());
         self::assertSame($message, $exception->getMessage());
+        self::assertFalse($exception->hasDefaultMessage());
     }
 
     /**

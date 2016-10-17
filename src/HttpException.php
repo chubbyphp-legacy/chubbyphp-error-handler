@@ -66,6 +66,11 @@ final class HttpException extends \RuntimeException
     const STATUS_511 = 'Network Authentication Required';
 
     /**
+     * @var bool
+     */
+    private $hasDefaultMessage;
+
+    /**
      * @param Request     $request
      * @param Response    $response
      * @param int         $status
@@ -79,6 +84,7 @@ final class HttpException extends \RuntimeException
 
         $exception->request = $request;
         $exception->response = $response;
+        $exception->hasDefaultMessage = null === $message;
 
         return $exception;
     }
@@ -113,5 +119,13 @@ final class HttpException extends \RuntimeException
     public function getResponse(): Response
     {
         return $this->response;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDefaultMessage(): bool
+    {
+        return $this->hasDefaultMessage;
     }
 }
