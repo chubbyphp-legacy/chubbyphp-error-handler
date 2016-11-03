@@ -2,6 +2,7 @@
 
 namespace Chubbyphp\Tests\ErrorHandler;
 
+use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
 use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
 use Chubbyphp\Tests\ErrorHandler\Resources\ErrorResponseProvider\JsonErrorResponseProvider;
 use Pimple\Container;
@@ -19,7 +20,7 @@ final class SimpleErrorHandlerProviderTest extends \PHPUnit_Framework_TestCase
         $container = new Container();
         $container->register(new SimpleErrorHandlerProvider());
 
-        $container['errorHandler.service'];
+        self::assertInstanceOf(ErrorHandlerMiddleware::class, $container['errorHandler.middleware']);
     }
 
     public function testWithDefaultProvider()
@@ -31,6 +32,6 @@ final class SimpleErrorHandlerProviderTest extends \PHPUnit_Framework_TestCase
             return new JsonErrorResponseProvider();
         };
 
-        $container['errorHandler.service'];
+        self::assertInstanceOf(ErrorHandlerMiddleware::class, $container['errorHandler.middleware']);
     }
 }
