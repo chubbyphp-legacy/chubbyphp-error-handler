@@ -63,6 +63,18 @@ class JsonErrorResponseProvider implements ErrorHandlerProvider
 }
 ```
 
+### ErrorHandlerMiddleware
+
+```{.php}
+<?php
+
+use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
+use Chubbyphp\ErrorHandler\ErrorHandlerInterface;
+
+$middleware = new ErrorHandlerMiddleware(new <ErrorHandlerInterface>);
+$middleware($request, $response, $next);
+```
+
 ### SimpleErrorHandler
 
 #### SimpleErrorHandler
@@ -93,6 +105,8 @@ $container->register(new SimpleErrorHandlerProvider);
 $container['errorHandler.defaultProvider'] = function () use ($container) {
     return new JsonErrorResponseProvider;
 };
+
+$app->add($container['errorHandler.middleware']);
 ```
 
 ### AdvancedErrorHandler
@@ -146,6 +160,8 @@ $container->extend('errorHandler.providers', function (array $providers) {
 
     return $providers;
 });
+
+$app->add($container['errorHandler.middleware']);
 ```
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-error-handler

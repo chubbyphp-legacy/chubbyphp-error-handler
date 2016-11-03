@@ -18,8 +18,10 @@ final class SimpleErrorHandlerProvider implements ServiceProviderInterface
             throw new \RuntimeException('Please configure your default provider for error handler!');
         };
 
-        $container['errorHandler.service'] = function () use ($container) {
-            return new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null);
+        $container['errorHandler.middleware'] = function () use ($container) {
+            return new ErrorHandlerMiddleware(
+                new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null)
+            );
         };
     }
 }

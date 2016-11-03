@@ -25,12 +25,14 @@ final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
             return [];
         };
 
-        $container['errorHandler.service'] = function () use ($container) {
-            return new AdvancedErrorHandler(
-                $container['errorHandler.contentTypeResolver'],
-                $container['errorHandler.defaultProvider'],
-                $container['errorHandler.providers'],
-                $container['logger'] ?? null
+        $container['errorHandler.middleware'] = function () use ($container) {
+            return new ErrorHandlerMiddleware(
+                 new AdvancedErrorHandler(
+                    $container['errorHandler.contentTypeResolver'],
+                    $container['errorHandler.defaultProvider'],
+                    $container['errorHandler.providers'],
+                    $container['logger'] ?? null
+                )
             );
         };
     }
