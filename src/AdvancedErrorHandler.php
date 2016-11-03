@@ -2,19 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\ErrorHandler\Slim;
+namespace Chubbyphp\ErrorHandler;
 
-use Chubbyphp\ErrorHandler\ContentTypeResolverInterface;
-use Chubbyphp\ErrorHandler\ErrorResponseProviderInterface;
-use Chubbyphp\ErrorHandler\HttpException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-/**
- * @deprecated use Chubbyphp\ErrorHandler\AdvancedErrorHandler
- */
 final class AdvancedErrorHandler implements ErrorHandlerInterface
 {
     /**

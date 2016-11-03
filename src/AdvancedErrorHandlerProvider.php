@@ -2,16 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\ErrorHandler\Slim;
+namespace Chubbyphp\ErrorHandler;
 
-use Chubbyphp\ErrorHandler\ContentTypeResolver;
 use Negotiation\Negotiator;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-/**
- * @deprecated use Chubbyphp\ErrorHandler\AdvancedErrorHandlerProvider
- */
 final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
 {
     /**
@@ -29,7 +25,7 @@ final class AdvancedErrorHandlerProvider implements ServiceProviderInterface
             return [];
         };
 
-        $container['errorHandler'] = function () use ($container) {
+        $container['errorHandler.service'] = function () use ($container) {
             return new AdvancedErrorHandler(
                 $container['errorHandler.contentTypeResolver'],
                 $container['errorHandler.defaultProvider'],

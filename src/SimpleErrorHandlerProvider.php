@@ -2,14 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Chubbyphp\ErrorHandler\Slim;
+namespace Chubbyphp\ErrorHandler;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-/**
- * @deprecated use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider
- */
 final class SimpleErrorHandlerProvider implements ServiceProviderInterface
 {
     /**
@@ -21,7 +18,7 @@ final class SimpleErrorHandlerProvider implements ServiceProviderInterface
             throw new \RuntimeException('Please configure your default provider for error handler!');
         };
 
-        $container['errorHandler'] = function () use ($container) {
+        $container['errorHandler.service'] = function () use ($container) {
             return new SimpleErrorHandler($container['errorHandler.defaultProvider'], $container['logger'] ?? null);
         };
     }
