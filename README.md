@@ -4,6 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/chubbyphp/chubbyphp-error-handler/downloads.png)](https://packagist.org/packages/chubbyphp/chubbyphp-error-handler)
 [![Latest Stable Version](https://poser.pugx.org/chubbyphp/chubbyphp-error-handler/v/stable.png)](https://packagist.org/packages/chubbyphp/chubbyphp-error-handler)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/chubbyphp/chubbyphp-error-handler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/chubbyphp/chubbyphp-error-handler/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/chubbyphp/chubbyphp-error-handler/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/chubbyphp/chubbyphp-error-handler/?branch=master)
 
 ## Description
 
@@ -23,13 +24,17 @@ A simple Error Handler Interface for PSR7.
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-error-handler][1].
 
+```sh
+composer require chubbyphp/chubbyphp-error-handler "~1.1"
+```
+
 ## Usage
 
 ### SimpleErrorHandler / AdvancedErrorHandler
 
 #### JsonErrorResponseProvider (implements ErrorHandlerProvider)
 
-```{.php}
+```php
 <?php
 
 namespace MyProject\ErrorHandler;
@@ -65,7 +70,7 @@ class JsonErrorResponseProvider implements ErrorHandlerProvider
 
 ### ErrorHandlerMiddleware
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\ErrorHandlerMiddleware;
@@ -79,7 +84,7 @@ $middleware($request, $response, $next);
 
 #### SimpleErrorHandler
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\SimpleErrorHandler;
@@ -91,7 +96,7 @@ $response = $errorHandler($request, $response, $exception);
 
 #### SimpleErrorHandlerProvider (Pimple)
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\SimpleErrorHandlerProvider;
@@ -113,7 +118,7 @@ $app->add($container['errorHandler.middleware']);
 
 #### ContentTypeResolver (needed only for multi content type error handler)
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\ContentTypeResolver;
@@ -126,7 +131,7 @@ $resolver->getContentType($request, ['text/html']);
 
 #### AdvancedErrorHandler
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\AdvancedErrorHandler;
@@ -138,7 +143,7 @@ $response = $errorHandler($request, $response, $expection);
 
 #### AdvancedErrorHandlerProvider (Pimple)
 
-```{.php}
+```php
 <?php
 
 use Chubbyphp\ErrorHandler\AdvancedErrorHandlerProvider;
