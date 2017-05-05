@@ -7,7 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\HttpException
+ * @covers \Chubbyphp\ErrorHandler\HttpException
  */
 final class HttpExceptionTest extends \PHPUnit_Framework_TestCase
 {

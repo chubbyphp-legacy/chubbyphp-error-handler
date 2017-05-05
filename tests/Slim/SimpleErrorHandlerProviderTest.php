@@ -7,7 +7,7 @@ use Chubbyphp\Tests\ErrorHandler\Resources\ErrorResponseProvider\JsonErrorRespon
 use Pimple\Container;
 
 /**
- * @covers Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider
+ * @covers \Chubbyphp\ErrorHandler\Slim\SimpleErrorHandlerProvider
  */
 final class SimpleErrorHandlerProviderTest extends \PHPUnit_Framework_TestCase
 {

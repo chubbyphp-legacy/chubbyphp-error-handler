@@ -10,7 +10,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\AdvancedErrorHandler
+ * @covers \Chubbyphp\ErrorHandler\AdvancedErrorHandler
  */
 final class AdvancedErrorHandlerTest extends \PHPUnit_Framework_TestCase
 {

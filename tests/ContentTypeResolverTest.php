@@ -8,7 +8,7 @@ use Negotiation\Negotiator;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * @covers Chubbyphp\ErrorHandler\ContentTypeResolver
+ * @covers \Chubbyphp\ErrorHandler\ContentTypeResolver
  */
 final class ContentTypeResolverTest extends \PHPUnit_Framework_TestCase
 {

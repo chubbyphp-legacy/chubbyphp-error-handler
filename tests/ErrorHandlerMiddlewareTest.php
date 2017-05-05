@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 /**
- * @covers Chubbyphp\ErrorHandler\ErrorHandlerMiddleware
+ * @covers \Chubbyphp\ErrorHandler\ErrorHandlerMiddleware
  */
 final class ErrorHandlerMiddlewareTest extends \PHPUnit_Framework_TestCase
 {

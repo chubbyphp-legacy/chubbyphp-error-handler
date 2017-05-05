@@ -8,7 +8,7 @@ use Chubbyphp\Tests\ErrorHandler\Resources\ErrorResponseProvider\XmlErrorRespons
 use Pimple\Container;
 
 /**
- * @covers Chubbyphp\ErrorHandler\Slim\AdvancedErrorHandlerProvider
+ * @covers \Chubbyphp\ErrorHandler\Slim\AdvancedErrorHandlerProvider
  */
 final class AdvancedErrorHandlerProviderTest extends \PHPUnit_Framework_TestCase
 {
